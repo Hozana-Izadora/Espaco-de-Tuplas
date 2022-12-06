@@ -2,13 +2,7 @@ from PyQt5 import QtWidgets, uic
 import linsimpy
 
 import Espaco_Tuplas as ts
-
-def openSegundaTela():
-    segunda_tela.show()
-    lista_nuvens = ts.listNuvens()
-    print(lista_nuvens)
-    # segunda_tela.listView.addItem(lista_nuvens)
-
+lista_nuvens = []
 
 nuvens = []
 hosts = []
@@ -21,7 +15,6 @@ tse.out(("HOSTS", tuple(hosts)))
 tse.out(("VMS", tuple(vms)))
 tse.out(("PROCESSOS", tuple(processos)))
 
- 
 def cadastraContainer():
     nuvem    = primeira_tela.lineEdit.text()
     host     = primeira_tela.lineEdit_2.text()
@@ -42,14 +35,22 @@ def cadastraContainer():
     if(data[3]!= ''):
         nomeProcesso = data[3]
         ts.criaProcesso(nomeProcesso)
- 
+    lista_nuvens = ts.listNuvens()
+    openSegundaTela(lista_nuvens)
+
+def openSegundaTela(itens):
+    segunda_tela.show()
+    for i in itens:
+        segunda_tela.listView.addItem(i)
+
+    
+    
 
 app=QtWidgets.QApplication([])
 primeira_tela=uic.loadUi("primeira_tela.ui")
 primeira_tela.show()
 segunda_tela=uic.loadUi("segunda_tela.ui")
 primeira_tela.pushButton.clicked.connect(cadastraContainer)
-primeira_tela.pushButton.clicked.connect(openSegundaTela)
-
+# primeira_tela.pushButton.clicked.connect(openSegundaTela)
 
 app.exec()

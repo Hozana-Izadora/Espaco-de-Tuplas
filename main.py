@@ -3,6 +3,7 @@ import application
 def main():
     app=QtWidgets.QApplication([])
     app.exec()
+    
 
 if __name__ == "__main__":
     main()
