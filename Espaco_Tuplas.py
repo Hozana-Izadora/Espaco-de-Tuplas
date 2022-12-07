@@ -22,7 +22,7 @@ def criaNuvem(nomeNuvem):
 
 def criaHost(nomeHost): 
     print(f"Host: {nomeHost} criada")
-    tse.out((nomeHost))
+    tse.out(("HOST", nomeHost))
     tsHosts = []
     try:
         hosts = tse.inp(("HOSTS", object))
@@ -36,7 +36,7 @@ def criaHost(nomeHost):
 
 def criaVM(nomeVM): 
     print(f"VM: {nomeVM} criada")
-    tse.out((nomeVM))
+    tse.out(("VM", nomeVM))
     tsVms = []
     try:
         vms = tse.inp(("VMS", object))
@@ -50,7 +50,8 @@ def criaVM(nomeVM):
 
 def criaProcesso(nomeProcesso):
     print(f"Processo: {nomeProcesso} criada")
-    tse.out((nomeProcesso))
+    tse.out(("PROCESSO", nomeProcesso))
+
     tsProcessos = []
     try:
         processos = tse.inp(("PROCESSOS", object))
@@ -86,7 +87,85 @@ def existe(tipo_tupla, nome):
     except:
         return 0
         
+def criaContainer(id,ts):
+    tuplas = []
+    try:
+        tupla = tse.inp(("TS",id,tuple(ts)))
+        print(f"Tupla já existe: {tupla}")
+        return 1
+    except:
+        tse.out(("TS",id,tuple(ts)))
+        x = [id,tuple(ts)]
+        tuplas.append(x)
+        tupla = tse.rdp(("TS",id,tuple(ts)))
+        return tupla
 
+
+def migraContainer(id, oldTs, idNew,newTs):
+    tuplas = []
+    try:
+        tupla = tse.rdp(("TS",idNew,tuple(newTs)))
+        print(f"Tupla já existe: {tupla}")
+        return 1
+    except:
+        
+        tse.out(("TS",idNew, tuple(newTs)))
+        tuplas = tse.rdp(("TS", idNew, tuple(newTs)))
+        tuplas.remove(list(oldTs))
+        tuplas.append(tuple(newTs))
+        return tupla
+    
+    return 1            
+
+def rename(ts,oldName,newName):
+    try:
+        if(ts == "NUVEM"):
+            tse.inp((ts,oldName))
+            tse.out((ts,newName))
+            
+            tupla = tse.inp(("NUVENS",object))
+            nova_tupla = list(tupla[1])
+            nova_tupla.remove(oldName)
+            nova_tupla.append(newName)
+            tse.out(("NUVENS",tuple(nova_tupla)))
+            print("NOVO NOME: "+ str(newName))
+            return "NOVO NOME: "+ str(newName)
+        
+        elif(ts == "HOST"):
+            tse.inp((ts,oldName))
+            tse.out((ts,newName))
+            
+            tupla = tse.inp(("HOSTS",object))
+            nova_tupla = list(tupla[1])
+            nova_tupla.remove(oldName)
+            nova_tupla.append(newName)
+            tse.out(("HOSTS",tuple(nova_tupla)))
+            print("NOVO NOME: "+ str(newName))
+            return "NOVO NOME: "+ str(newName)
+        
+        elif(ts == "VM"):
+            tse.inp((ts,oldName))
+            tse.out((ts,newName))
+            
+            tupla = tse.inp(("VMS",object))
+            nova_tupla = list(tupla[1])
+            nova_tupla.remove(oldName)
+            nova_tupla.append(newName)
+            tse.out(("VMS",tuple(nova_tupla)))
+            return "NOVO NOME: "+ str(newName)
+        
+        elif(ts == "PROCESSO"):
+            tse.inp((ts,oldName))
+            tse.out((ts,newName))
+            
+            tupla = tse.inp(("PROCESSOS",object))
+            nova_tupla = list(tupla[1])
+            nova_tupla.remove(oldName)
+            nova_tupla.append(newName)
+            tse.out(("PROCESSOS",tuple(nova_tupla)))
+            return "NOVO NOME: "+ newName    
+    except:
+        return 1
 #listagem - read
 def listNuvens():
     try:
@@ -116,4 +195,11 @@ def listProcessos():
         return list(processos[1])
     except: 
         print(f"Tuple matching not found")
+
+def enviamsg(p1,p2,msg):
+    tse.out((p1,p2,msg))
+
+def recebeMsg(p1,p2,msg):
+    mensagem = tse.inp((p1,p2,msg))
+    return (mensagem)
 

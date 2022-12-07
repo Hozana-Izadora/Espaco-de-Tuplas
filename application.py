@@ -114,11 +114,111 @@ def excluiItem():
         QMessageBox.about(primeira_tela,"ALERTA", response) 
         atualizaTela()     
 
+def openTerceiraTela():
+    terceira_tela.show()
+
+def openQuartaTela():
+    quarta_tela.show()
+    lista_p= ts.listProcessos()
+    quarta_tela.comboBox_2.addItems(lista_p)
+    quarta_tela.comboBox_3.addItems(lista_p)
+   
+def chat():    
+    p1 = quarta_tela.comboBox_2.currentText()
+    p2 = quarta_tela.comboBox_3.currentText()
+    msg = quarta_tela.lineEdit.text()
+    ts.enviamsg(p1,p2,msg)
+    resp = ts.recebeMsg(p1,p2,msg)
+    quarta_tela.listWidget.addItem(f"{str(resp[1])} recebendo msg de {str(resp[0])}: {str(resp[2])}")
+    quarta_tela.lineEdit.clear()
+
+def insertHost():       
+    path_host = terceira_tela.lineEdit.text()
+    path_host = path_host.split("-")
+    id = path_host[0]
+    path_host.remove(id)
+    response = ts.criaContainer(id,path_host)
+    if(response == 1):
+        QMessageBox.about(terceira_tela,"ALERTA", "TUPLA JÁ EXISTE")  
+    else:
+        terceira_tela.label_5.setText("PATH: " +  str(response))
+    terceira_tela.lineEdit.clear()
+def insertVM():   
+    path_vm = terceira_tela.lineEdit_2.text()
+    path_vm = path_vm.split("-")
+    id = path_vm[0]
+    path_vm.remove(id)
+
+    response = ts.criaContainer(id,path_vm)
+    if(response == 1):
+        QMessageBox.about(terceira_tela,"ALERTA", "TUPLA JÁ EXISTE")  
+    else:
+        terceira_tela.label_5.setText("PATH: " +  str(response))
+    terceira_tela.lineEdit_2.clear()
+def insertProcesso():   
+    path_processo = terceira_tela.lineEdit_3.text()
+    path_processo = path_processo.split("-")
+    id = path_processo[0]
+    path_processo.remove(id)
+
+    response = ts.criaContainer(id,path_processo)
+    if(response == 1):
+        QMessageBox.about(terceira_tela,"ALERTA", "TUPLA JÁ EXISTE")  
+    else:
+        terceira_tela.label_5.setText("PATH: " + str(response))
+    
+    terceira_tela.lineEdit_3.clear()
+def migracaoContainer():
+    old_ts = terceira_tela.lineEdit_6.text()
+    new_ts = terceira_tela.lineEdit_7.text()
+    old_ts = old_ts.split("-")
+    new_ts = new_ts.split("-")
+    id = old_ts[0]
+    old_ts.remove(id)
+    id_new = new_ts[0]
+    new_ts.remove(id_new)
+    response = ts.migraContainer(id,old_ts,id_new,new_ts)
+    if(response == 1):
+        QMessageBox.about(terceira_tela,"ERRO", "ERRO AO CADASTRAR TUPLA")  
+    else:
+        terceira_tela.lineEdit_13.setText("NOVO PATH: "+ str(response))
+    terceira_tela.lineEdit_6.clear()
+    terceira_tela.lineEdit_7.clear()
+
+def renomear():
+    antigo = terceira_tela.lineEdit_4.text()
+    novo = terceira_tela.lineEdit_5.text()
+    tupla = terceira_tela.comboBox.currentText()
+    response = ts.rename(tupla,antigo,novo)
+    print(tupla)
+    if(response == 1):
+        QMessageBox.about(terceira_tela,"ERRO", "ERRO AO RENOMEAR TUPLA")  
+    else:
+        terceira_tela.label_9.setText(response)
+        atualizaTela()
+    terceira_tela.lineEdit_4.clear()
+    terceira_tela.lineEdit_5.clear()
+
+  
+
+###########    MAIN   ###############
 app=QtWidgets.QApplication([])
 primeira_tela=uic.loadUi("primeira_tela.ui")
 primeira_tela.show()
 segunda_tela=uic.loadUi("segunda_tela.ui")
+terceira_tela=uic.loadUi("terceira_tela.ui")
+quarta_tela=uic.loadUi("quarta_tela.ui")
 primeira_tela.pushButton.clicked.connect(cadastraContainer)
 primeira_tela.pushButton_2.clicked.connect(excluiItem)
+segunda_tela.pushButton.clicked.connect(openTerceiraTela)
+terceira_tela.pushButton_2.clicked.connect(renomear)
+terceira_tela.pushButton.clicked.connect(insertHost)
+terceira_tela.pushButton_3.clicked.connect(insertVM)
+terceira_tela.pushButton_4.clicked.connect(insertProcesso)
+terceira_tela.pushButton_5.clicked.connect(migracaoContainer)
+terceira_tela.pushButton_6.clicked.connect(openQuartaTela)
+quarta_tela.pushButton.clicked.connect(chat)
+
+# quarta_tela.pushButton_2.clicked.connect(iniciaChat)
 
 app.exec()
