@@ -86,14 +86,14 @@ def existe(tipo_tupla, nome):
         return 1
     except:
         return 0
-        
+
 def criaContainer(id,ts):
     tuplas = []
     try:
         tupla = tse.inp(("TS",id,tuple(ts)))
         print(f"Tupla já existe: {tupla}")
         return 1
-    except:
+    except:        
         tse.out(("TS",id,tuple(ts)))
         x = [id,tuple(ts)]
         tuplas.append(x)
