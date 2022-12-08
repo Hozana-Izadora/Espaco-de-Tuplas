@@ -208,10 +208,10 @@ def migracaoContainer():
     id_new = new_ts[0]
     new_ts.remove(id_new)
     response = ts.migraContainer(id,old_ts,id_new,new_ts)
-    if(response == 1):
+    if(response == 0):
         QMessageBox.about(terceira_tela,"ERRO", "ERRO AO CADASTRAR TUPLA")  
     else:
-        terceira_tela.lineEdit_13.setText("NOVO PATH: "+ str(response))
+        terceira_tela.label_13.setText("NOVO PATH: "+ str(response))
     terceira_tela.lineEdit_6.clear()
     terceira_tela.lineEdit_7.clear()
 

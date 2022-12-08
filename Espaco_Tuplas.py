@@ -102,20 +102,14 @@ def criaContainer(id,ts):
 
 
 def migraContainer(id, oldTs, idNew,newTs):
-    tuplas = []
     try:
-        tupla = tse.rdp(("TS",idNew,tuple(newTs)))
-        print(f"Tupla já existe: {tupla}")
-        return 1
-    except:
-        
+        tuplas = tse.inp(("TS",id,tuple(oldTs)))
         tse.out(("TS",idNew, tuple(newTs)))
-        tuplas = tse.rdp(("TS", idNew, tuple(newTs)))
-        tuplas.remove(list(oldTs))
-        tuplas.append(tuple(newTs))
+        tupla = tse.rdp(("TS",idNew,tuple(newTs)))
         return tupla
-    
-    return 1            
+    except:        
+        return 0
+            
 
 def rename(ts,oldName,newName):
     try:
