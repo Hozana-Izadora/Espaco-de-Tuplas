@@ -135,38 +135,68 @@ def chat():
 def insertHost():       
     path_host = terceira_tela.lineEdit.text()
     path_host = path_host.split("-")
-    id = path_host[0]
-    path_host.remove(id)
-    response = ts.criaContainer(id,path_host)
-    if(response == 1):
-        QMessageBox.about(terceira_tela,"ALERTA", "TUPLA JÁ EXISTE")  
+    existeNuvem = ts.existe("NUVEM",path_host[1]) #VERIFICA SE A NUVEM EXISTE
+    existeHost = ts.existe("HOST",path_host[2]) #VERIFICA SE O HOST EXISTE
+    if(existeNuvem == 1 and existeHost == 1):
+        id = path_host[0]
+        path_host.remove(id)
+        response = ts.criaContainer(id,path_host)
+        if(response == 1):
+            QMessageBox.about(terceira_tela,"ALERTA", "TUPLA JÁ EXISTE")  
+        else:
+            terceira_tela.label_5.setText("PATH: " +  str(response))
     else:
-        terceira_tela.label_5.setText("PATH: " +  str(response))
+        QMessageBox.about(terceira_tela,"ALERTA", "ITEM NÃO FOI LOCALIZADO")  
+
     terceira_tela.lineEdit.clear()
 def insertVM():   
     path_vm = terceira_tela.lineEdit_2.text()
     path_vm = path_vm.split("-")
+    existeNuvem = ts.existe("NUVEM",path_vm[1]) #VERIFICA SE A NUVEM EXISTE
+    existeHost = ts.existe("HOST",path_vm[2]) #VERIFICA SE O HOST EXISTE
+    existeVm = ts.existe("VM",path_vm[3]) #VERIFICA SE O HOST EXISTE
     id = path_vm[0]
     path_vm.remove(id)
 
-    response = ts.criaContainer(id,path_vm)
-    if(response == 1):
-        QMessageBox.about(terceira_tela,"ALERTA", "TUPLA JÁ EXISTE")  
+    if(existeNuvem == 1 and existeHost == 1 and existeVm == 1):
+        response = ts.criaContainer(id,path_vm)
+        if(response == 1):
+            QMessageBox.about(terceira_tela,"ALERTA", "TUPLA JÁ EXISTE")  
+        else:
+            terceira_tela.label_5.setText("PATH: " +  str(response))
     else:
-        terceira_tela.label_5.setText("PATH: " +  str(response))
+        QMessageBox.about(terceira_tela,"ALERTA", "ITEM NÃO FOI LOCALIZADO")  
+
     terceira_tela.lineEdit_2.clear()
 def insertProcesso():   
     path_processo = terceira_tela.lineEdit_3.text()
-    path_processo = path_processo.split("-")
+    path_processo = path_processo.split("-")  
+    
+    existeNuvem = ts.existe("NUVEM",path_processo[1]) #VERIFICA SE A NUVEM EXISTE
+    existeHost = ts.existe("HOST",path_processo[2]) #VERIFICA SE O HOST EXISTE
+    existeVm = ts.existe("VM",path_processo[3]) #VERIFICA SE O HOST EXISTE
+    processos = path_processo[4]
+    proc = processos.split(",")
     id = path_processo[0]
     path_processo.remove(id)
+    path_processo.remove(processos)
+    x = False
+    for p in proc:
+        existeProcesso = ts.existe("PROCESSO",p) #VERIFICA SE O PROCESSO EXISTE
+        if(existeProcesso == 1):
+            path_processo.append(p)
+            
+            x=True
 
-    response = ts.criaContainer(id,path_processo)
-    if(response == 1):
-        QMessageBox.about(terceira_tela,"ALERTA", "TUPLA JÁ EXISTE")  
+    if(x == True):
+        if(existeNuvem == 1 and existeHost == 1 and existeVm == 1):
+            response = ts.criaContainer(id,path_processo) 
+            if(response == 1):
+                QMessageBox.about(terceira_tela,"ALERTA", "TUPLA JÁ EXISTE")          
+            else:
+                terceira_tela.label_5.setText("PATH: " + str(response))
     else:
-        terceira_tela.label_5.setText("PATH: " + str(response))
-    
+        QMessageBox.about(terceira_tela,"ALERTA", "ITEM NÃO FOI LOCALIZADO")  
     terceira_tela.lineEdit_3.clear()
 def migracaoContainer():
     old_ts = terceira_tela.lineEdit_6.text()
@@ -178,10 +208,10 @@ def migracaoContainer():
     id_new = new_ts[0]
     new_ts.remove(id_new)
     response = ts.migraContainer(id,old_ts,id_new,new_ts)
-    if(response == 1):
+    if(response == 0):
         QMessageBox.about(terceira_tela,"ERRO", "ERRO AO CADASTRAR TUPLA")  
     else:
-        terceira_tela.lineEdit_13.setText("NOVO PATH: "+ str(response))
+        terceira_tela.label_13.setText("NOVO PATH: "+ str(response))
     terceira_tela.lineEdit_6.clear()
     terceira_tela.lineEdit_7.clear()
 
